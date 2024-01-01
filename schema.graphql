@@ -18,11 +18,7 @@ type Domain @entity {
 
   "The resolver that controls the domain's settings"
   resolver: Resolver
-  "The time-to-live (TTL) value of the domain's records"
-  ttl: BigInt
 
-  "Indicates whether the domain has been migrated to a new registrar"
-  isMigrated: Boolean!
   "The time when the domain was created"
   createdAt: BigInt!
 
@@ -32,6 +28,11 @@ type Domain @entity {
   registrant: Account
   "The account that owns the wrapped domain"
   wrappedOwner: Account
+
+  "The registration NFT Contract of the domain"
+  nftContract: Bytes!
+  "The registration NFT ID of the domain"
+  nftId: BigInt!
 
   "The expiry date for the domain, from either the registration, or the wrapped domain if PCC is burned"
   expiryDate: BigInt
@@ -97,19 +98,6 @@ type NewResolver implements DomainEvent @entity {
   resolver: Resolver!
 }
 
-type NewTTL implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The new TTL value (in seconds) associated with the domain"
-  ttl: BigInt!
-}
-
 type WrappedTransfer implements DomainEvent @entity {
   "The unique identifier of the event"
   id: ID!
@@ -168,19 +156,6 @@ type FusesSet implements DomainEvent @entity {
   fuses: Int!
 }
 
-type ExpiryExtended implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The new expiry date associated with the domain after the extension event"
-  expiryDate: BigInt!
-}
-
 type Registration @entity {
   "The unique identifier of the registration"
   id: ID!
@@ -188,10 +163,10 @@ type Registration @entity {
   domain: Domain!
   "The registration date of the domain"
   registrationDate: BigInt!
-  "The expiry date of the domain"
-  expiryDate: BigInt!
-  "The cost associated with the domain registration"
-  cost: BigInt
+  "The registration NFT Contract of the domain"
+  nftContract: Bytes!
+  "The registration NFT ID of the domain"
+  nftId: BigInt!
   "The account that registered the domain"
   registrant: Account!
   "The human-readable label name associated with the domain registration"
