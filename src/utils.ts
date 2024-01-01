@@ -14,6 +14,7 @@ export const REMILIAS_NODE =
 export const ROOT_NODE =
   "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const EMPTY_ADDRESS_BYTEARRAY = new ByteArray(20);
 
 // Helper for concatenating two byte arrays
 export function concat(a: ByteArray, b: ByteArray): ByteArray {
