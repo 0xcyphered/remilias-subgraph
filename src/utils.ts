@@ -9,10 +9,10 @@ export function createEventID(event: ethereum.Event): string {
     .concat(event.logIndex.toString());
 }
 
-export const ETH_NODE =
-  "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
+export const REMILIAS_NODE =
+  "0xf029b4b627c4a2cd7f70eb6bb0281fec39238419d6d4df5a010dad7432a8d5c8";
 export const ROOT_NODE =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
+  "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 // Helper for concatenating two byte arrays
