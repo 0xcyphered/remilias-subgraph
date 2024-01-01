@@ -11,7 +11,6 @@ import {
 } from "./types/NameWrapper/NameWrapper";
 // Import entity types generated from the GraphQL schema
 import {
-  ExpiryExtended,
   FusesSet,
   NameUnwrapped,
   NameWrapped,
@@ -24,7 +23,7 @@ import {
   createEventID,
   createOrLoadAccount,
   createOrLoadDomain,
-  ETH_NODE,
+  REMILIAS_NODE,
 } from "./utils";
 
 function decodeName(buf: Bytes): Array<string> | null {
@@ -120,7 +119,7 @@ export function handleNameUnwrapped(event: NameUnwrappedEvent): void {
 
   let domain = createOrLoadDomain(node.toHex());
   domain.wrappedOwner = null;
-  if (domain.expiryDate && domain.parent !== ETH_NODE) {
+  if (domain.expiryDate && domain.parent !== REMILIAS_NODE) {
     domain.expiryDate = null;
   }
   domain.save();
@@ -158,31 +157,6 @@ export function handleFusesSet(event: FusesSetEvent): void {
   fusesBurnedEvent.blockNumber = blockNumber;
   fusesBurnedEvent.transactionID = transactionID;
   fusesBurnedEvent.save();
-}
-
-export function handleExpiryExtended(event: ExpiryExtendedEvent): void {
-  let node = event.params.node;
-  let expiry = event.params.expiry;
-  let blockNumber = event.block.number.toI32();
-  let transactionID = event.transaction.hash;
-  let wrappedDomain = WrappedDomain.load(node.toHex());
-  if (wrappedDomain) {
-    wrappedDomain.expiryDate = expiry;
-    wrappedDomain.save();
-    if (checkPccBurned(wrappedDomain.fuses)) {
-      let domain = createOrLoadDomain(node.toHex());
-      if (!domain.expiryDate || expiry > domain.expiryDate!) {
-        domain.expiryDate = expiry;
-        domain.save();
-      }
-    }
-  }
-  let expiryExtendedEvent = new ExpiryExtended(createEventID(event));
-  expiryExtendedEvent.domain = node.toHex();
-  expiryExtendedEvent.expiryDate = expiry;
-  expiryExtendedEvent.blockNumber = blockNumber;
-  expiryExtendedEvent.transactionID = transactionID;
-  expiryExtendedEvent.save();
 }
 
 function makeWrappedTransfer(

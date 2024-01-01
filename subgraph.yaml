@@ -6,67 +6,42 @@ repository: "https://github.com/ensdomains/ens-subgraph"
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum/contract
-    name: ENSRegistry
-    network: mainnet
-    source:
-      address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
-      abi: EnsRegistry
-      startBlock: 9380380
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/ensRegistry.ts
-      entities:
-        - Domain
-        - Account
-        - Resolver
-      abis:
-        - name: EnsRegistry
-          file: ./abis/Registry.json
-      eventHandlers:
-        - event: "Transfer(indexed bytes32,address)"
-          handler: handleTransfer
-        - event: "NewOwner(indexed bytes32,indexed bytes32,address)"
-          handler: handleNewOwner
-        - event: "NewResolver(indexed bytes32,address)"
-          handler: handleNewResolver
-        - event: "NewTTL(indexed bytes32,uint64)"
-          handler: handleNewTTL
-  - kind: ethereum/contract
-    name: ENSRegistryOld
-    network: mainnet
-    source:
-      address: "0x314159265dd8dbb310642f98f50c066173c1259b"
-      abi: EnsRegistry
-      startBlock: 3327417
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/ensRegistry.ts
-      entities:
-        - Domain
-        - Account
-        - Resolver
-      abis:
-        - name: EnsRegistry
-          file: ./abis/Registry.json
-      eventHandlers:
-        - event: "Transfer(indexed bytes32,address)"
-          handler: handleTransferOldRegistry
-        - event: "NewOwner(indexed bytes32,indexed bytes32,address)"
-          handler: handleNewOwnerOldRegistry
-        - event: "NewResolver(indexed bytes32,address)"
-          handler: handleNewResolverOldRegistry
-        - event: "NewTTL(indexed bytes32,uint64)"
-          handler: handleNewTTLOldRegistry
+  # - kind: ethereum/contract
+  #   name: ENSRegistry
+  #   network: mainnet
+  #   source:
+  #     address: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
+  #     abi: EnsRegistry
+  #     startBlock: 17390814
+  #     # startBlock: 9380380
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     file: ./src/ensRegistry.ts
+  #     entities:
+  #       - Domain
+  #       - Account
+  #       - Resolver
+  #     abis:
+  #       - name: EnsRegistry
+  #         file: ./abis/Registry.json
+  #     eventHandlers:
+  #       - event: "Transfer(indexed bytes32,address)"
+  #         handler: handleTransfer
+  #       - event: "NewOwner(indexed bytes32,indexed bytes32,address)"
+  #         handler: handleNewOwner
+  #       - event: "NewResolver(indexed bytes32,address)"
+  #         handler: handleNewResolver
+  #       - event: "NewTTL(indexed bytes32,uint64)"
+  #         handler: handleNewTTL
   - kind: ethereum/contract
     name: Resolver
     network: mainnet
     source:
-      abi: Resolver
+      address: "0xb9fa1d93A9666126a79825788De1527a9dBb73e6"
+      abi: RemiliasPublicResolver
+      startBlock: 18910709
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -81,10 +56,9 @@ dataSources:
         - Textchanged
         - ContenthashChanged
         - InterfaceChanged
-        - AuthorisationChanged
       abis:
         - name: Resolver
-          file: ./abis/PublicResolver.json
+          file: ./abis/RemiliasPublicResolver.json
       eventHandlers:
         - event: "ABIChanged(indexed bytes32,indexed uint256)"
           handler: handleABIChanged
@@ -92,10 +66,6 @@ dataSources:
           handler: handleAddrChanged
         - event: "AddressChanged(indexed bytes32,uint256,bytes)"
           handler: handleMulticoinAddrChanged
-        - event: >-
-            AuthorisationChanged(indexed bytes32,indexed address,indexed
-            address,bool)
-          handler: handleAuthorisationChanged
         - event: "ContenthashChanged(indexed bytes32,bytes)"
           handler: handleContentHashChanged
         - event: "InterfaceChanged(indexed bytes32,indexed bytes4,address)"
@@ -104,94 +74,63 @@ dataSources:
           handler: handleNameChanged
         - event: "PubkeyChanged(indexed bytes32,bytes32,bytes32)"
           handler: handlePubkeyChanged
-        - event: "TextChanged(indexed bytes32,indexed string,string)"
-          handler: handleTextChanged
         - event: "TextChanged(indexed bytes32,indexed string,string,string)"
           handler: handleTextChangedWithValue
         - event: "VersionChanged(indexed bytes32,uint64)"
           handler: handleVersionChanged
   - kind: ethereum/contract
-    name: BaseRegistrar
+    name: RemiliasRegistrar
     network: mainnet
     source:
-      address: "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85"
-      abi: BaseRegistrar
-      startBlock: 9380410
+      address: "0x61867B6d828C6Ba3a04D114b43C03fa6e94752a3"
+      abi: RemiliasRegistrar
+      startBlock: 18910694
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/ethRegistrar.ts
+      file: ./src/remiliasRegistrar.ts
       entities:
         - Registration
         - NameRegistered
-        - NameRenewed
         - NameTransferred
       abis:
-        - name: BaseRegistrar
-          file: ./abis/BaseRegistrar.json
+        - name: RemiliasRegistrar
+          file: ./abis/RemiliasRegistrar.json
       eventHandlers:
-        - event: "NameRegistered(indexed uint256,indexed address,uint256)"
+        - event: "NameRegistered(indexed uint256,indexed address,indexed address,uint256)"
           handler: handleNameRegistered
-        - event: "NameRenewed(indexed uint256,uint256)"
-          handler: handleNameRenewed
         - event: "Transfer(indexed address,indexed address,indexed uint256)"
           handler: handleNameTransferred
   - kind: ethereum/contract
-    name: EthRegistrarControllerOld
+    name: RemiliasRegistrarController
     network: mainnet
     source:
-      address: "0x283Af0B28c62C092C9727F1Ee09c02CA627EB7F5"
-      abi: EthRegistrarControllerOld
-      startBlock: 9380471
+      address: "0x44B7922c2eD5f0d1e5210C8e90c6d2E03E66e046"
+      abi: RemiliasRegistrarController
+      startBlock: 18910701
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/ethRegistrar.ts
+      file: ./src/remiliasRegistrar.ts
       entities:
         - Registration
       abis:
-        - name: EthRegistrarControllerOld
-          file: ./abis/EthRegistrarControllerOld.json
+        - name: RemiliasRegistrarController
+          file: ./abis/RemiliasRegistrarController.json
       eventHandlers:
         - event: >-
             NameRegistered(string,indexed bytes32,indexed
-            address,uint256,uint256)
-          handler: handleNameRegisteredByControllerOld
-        - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
-          handler: handleNameRenewedByController
-  - kind: ethereum/contract
-    name: EthRegistrarController
-    network: mainnet
-    source:
-      address: "0x253553366Da8546fC250F225fe3d25d0C782303b"
-      abi: EthRegistrarController
-      startBlock: 16925618
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/ethRegistrar.ts
-      entities:
-        - Registration
-      abis:
-        - name: EthRegistrarController
-          file: ./abis/EthRegistrarController.json
-      eventHandlers:
-        - event: >-
-            NameRegistered(string,indexed bytes32,indexed
-            address,uint256,uint256,uint256)
+            address,indexed address,uint256)
           handler: handleNameRegisteredByController
-        - event: "NameRenewed(string,indexed bytes32,uint256,uint256)"
-          handler: handleNameRenewedByController
   - kind: ethereum/contract
     name: NameWrapper
     network: mainnet
     source:
-      address: "0xD4416b13d2b3a9aBae7AcD5D6C2BbDBE25686401"
-      abi: NameWrapper
-      startBlock: 16925608
+      address: "0xCC757CDfC2305113f04Ce1fe08951C2889526B37"
+      abi: RemiliasNameWrapper
+      startBlock: 18910698
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -201,7 +140,7 @@ dataSources:
         - NameWrapper
       abis:
         - name: NameWrapper
-          file: ./abis/NameWrapper.json
+          file: ./abis/RemiliasNameWrapper.json
       eventHandlers:
         - event: "NameWrapped(indexed bytes32,bytes,address,uint32,uint64)"
           handler: handleNameWrapped
@@ -209,8 +148,6 @@ dataSources:
           handler: handleNameUnwrapped
         - event: "FusesSet(indexed bytes32,uint32)"
           handler: handleFusesSet
-        - event: "ExpiryExtended(indexed bytes32,uint64)"
-          handler: handleExpiryExtended
         - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
           handler: handleTransferSingle
         - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
