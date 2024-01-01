@@ -17,7 +17,6 @@ import {
   Domain,
   NewOwner,
   NewResolver,
-  NewTTL,
   Resolver,
   Transfer,
 } from "./types/schema";
@@ -203,25 +202,6 @@ export function handleNewResolver(event: NewResolverEvent): void {
   domainEvent.save();
 }
 
-// Handler for NewTTL events
-export function handleNewTTL(event: NewTTLEvent): void {
-  let node = event.params.node.toHexString();
-  let domain = getDomain(node);
-  // For the edge case that a domain's owner and resolver are set to empty
-  // in the same transaction as setting TTL
-  if (domain) {
-    domain.ttl = event.params.ttl;
-    domain.save();
-  }
-
-  let domainEvent = new NewTTL(createEventID(event));
-  domainEvent.blockNumber = event.block.number.toI32();
-  domainEvent.transactionID = event.transaction.hash;
-  domainEvent.domain = node;
-  domainEvent.ttl = event.params.ttl;
-  domainEvent.save();
-}
-
 export function handleNewOwner(event: NewOwnerEvent): void {
   _handleNewOwner(event, true);
 }
@@ -240,12 +220,6 @@ export function handleNewResolverOldRegistry(event: NewResolverEvent): void {
   let domain = getDomain(node, event.block.timestamp)!;
   if (node == ROOT_NODE || !domain.isMigrated) {
     handleNewResolver(event);
-  }
-}
-export function handleNewTTLOldRegistry(event: NewTTLEvent): void {
-  let domain = getDomain(event.params.node.toHexString())!;
-  if (domain.isMigrated == false) {
-    handleNewTTL(event);
   }
 }
 
